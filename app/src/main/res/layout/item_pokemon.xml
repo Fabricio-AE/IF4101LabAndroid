@@ -16,40 +16,30 @@
         android:layout_marginTop="10dp"
         >
 
-        <androidx.constraintlayout.utils.widget.ImageFilterView
-            android:id="@+id/icono_item"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/nombre_item"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="VectorDrawableCompat"
-            tools:srcCompat="@drawable/ic_charmander" />
-
         <TextView
             android:id="@+id/nombre_item"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_horizontal"
             android:text="Nombre"
-            android:textColor="@color/black"
             android:textAlignment="center"
-            android:gravity="center_horizontal"/>
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_item"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_item"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            app:layout_constraintStart_toEndOf="@id/nombre_item"
-            app:layout_constraintTop_toTopOf="parent"
+            android:backgroundTint="@color/principal"
+            android:text="Ver"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:backgroundTint="@color/principal"
-            android:text="Ver"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="25dp"
+            />
 
 
 

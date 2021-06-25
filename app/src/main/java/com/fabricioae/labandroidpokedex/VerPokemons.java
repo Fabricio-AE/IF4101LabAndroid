@@ -7,10 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 
 import com.fabricioae.labandroidpokedex.adapters.ListaPokemonsAdapter;
-import com.fabricioae.labandroidpokedex.models.Pokemons;
-import com.fabricioae.labandroidpokedex.models.Result;
+import com.fabricioae.labandroidpokedex.adapters.RetrofitAdapter;
+import com.fabricioae.labandroidpokedex.models.Pokemon;
+import com.fabricioae.labandroidpokedex.models.Respuesta;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,76 +25,47 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VerPokemons extends AppCompatActivity {
 
     private RecyclerView rvPokemons;
-    //private Result result;
-    private List<Pokemons> results = new ArrayList<>();
+    private ListaPokemonsAdapter adapter;
+    private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_pokemons);
-
         this.rvPokemons = findViewById(R.id.lista_pokemons);
-        this.obtenerPokemons();
-        //ListaPokemonsAdapter adapter = new ListaPokemonsAdapter(this.results, this);
+        this.adapter = new ListaPokemonsAdapter(this);
+        this.rvPokemons.setLayoutManager(new LinearLayoutManager(this));
+        this.rvPokemons.setAdapter(this.adapter);
 
-        //this.rvPokemons.setLayoutManager(new LinearLayoutManager(this));
-        //this.rvPokemons.setAdapter(adapter);
+        RetrofitAdapter retrofitAdapter = RetrofitAdapter.getInstance();
+        this.retrofit = retrofitAdapter.getRetrofit();
+        this.obtenerPokemons();
     }
 
-    public void/*List<Result>*/ obtenerPokemons(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://pokeapi.co/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    public void obtenerPokemons(){
 
-        GitHubService service = retrofit.create(GitHubService.class);
 
-        Call<List<Pokemons>> call = service.getPokemons();
-        System.out.println("hola ");
-        try {
-            Response<List<Pokemons>> respons = call.execute();
-            System.out.println(respons.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        PokeapiService service = retrofit.create(PokeapiService.class);
 
-        call.enqueue(new Callback<List<Pokemons>>() {
+        Call<Respuesta> call = service.getPokemons();
+
+        call.enqueue(new Callback<Respuesta>() {
             @Override
-            public void onResponse(Call<List<Pokemons>> call, Response<List<Pokemons>> response) {
-                System.out.println("hola222222222222222222222222");
-                System.out.println("Respuesta: "+ response.code());
+            public void onResponse(Call<Respuesta> call, Response<Respuesta> response) {
                 if (!response.isSuccessful()){
-                    System.out.println("Respuesta: "+ response.code());
+                    System.out.println("Error");
                     return;
                 }
-                //System.out.println("Respuesta: "+ response.code());
-                List<Pokemons> pokemonsList = response.body();
-                System.out.println("hola222222222222222222222222");
-                for (Pokemons pokemons : pokemonsList) {
-                    System.out.println(pokemons.getNext());
-                    //results.add(new Result(pokemons.getName(), result.url));
-                }
+                Respuesta respuesta = response.body();
+                adapter.setPokemons(respuesta.getResults());
 
             }
 
             @Override
-            public void onFailure(Call<List<Pokemons>> call, Throwable t) {
+            public void onFailure(Call<Respuesta> call, Throwable t) {
 
             }
         });
-
-/*
-        List<Result> lista = new ArrayList<>();
-        lista.add(new Result("bulbasaur", "jaja"));
-        lista.add(new Result("Charizard", "jaja"));
-        lista.add(new Result("Charizard", "jaja"));
-        lista.add(new Result("Charizard", "jaja"));
-        lista.add(new Result("Charizard", "jaja"));
-        lista.add(new Result("Charizard", "jaja"));
-        lista.add(new Result("Charizard", "jaja"));
-        lista.add(new Result("Charizard", "jaja"));
-
-        return lista;*/
     }
 
 }

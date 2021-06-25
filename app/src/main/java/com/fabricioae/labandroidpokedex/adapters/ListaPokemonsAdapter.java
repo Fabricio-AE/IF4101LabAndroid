@@ -1,6 +1,7 @@
 package com.fabricioae.labandroidpokedex.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,19 +9,31 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fabricioae.labandroidpokedex.InformacionPokemon;
 import com.fabricioae.labandroidpokedex.R;
-import com.fabricioae.labandroidpokedex.models.Result;
+import com.fabricioae.labandroidpokedex.VerPokemons;
+import com.fabricioae.labandroidpokedex.models.Pokemon;
+import com.fabricioae.labandroidpokedex.models.Respuesta;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class ListaPokemonsAdapter extends RecyclerView.Adapter<ItemPokemonViewHolder> {
 
-    private List<Result> listaResults;
+    private ArrayList<Pokemon> pokemons;
     private Context context;
 
-    public ListaPokemonsAdapter(List<Result> listaResults, Context context) {
-        this.listaResults = listaResults;
+    public ListaPokemonsAdapter(Context context) {
+        this.pokemons = new ArrayList<>();
         this.context = context;
+    }
+
+    public ArrayList<Pokemon> getPokemons() {
+        return pokemons;
+    }
+
+    public void setPokemons(ArrayList<Pokemon> pokemons) {
+        this.pokemons.addAll(pokemons);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -35,29 +48,17 @@ public class ListaPokemonsAdapter extends RecyclerView.Adapter<ItemPokemonViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ItemPokemonViewHolder holder, int position) {
-        final Result result = this.listaResults.get(position);
-        holder.nombrePokemon.setText(result.getName());
-        switch (result.getName()){
-            case "bulbasaur":
-                holder.iconoPokemon.setBackgroundResource(R.mipmap.ic_bulbasaur_layer);
-                break;
-            case "ivasaur":
-                holder.iconoPokemon.setBackgroundResource(R.mipmap.ic_bulbasaur_layer);
-                break;
-            case "venusaur":
-                holder.iconoPokemon.setBackgroundResource(R.mipmap.ic_bulbasaur);
-                break;
-            case "charmander":
-                holder.iconoPokemon.setBackgroundResource(R.mipmap.ic_bulbasaur);
-                break;
-            case "charmeleon":
-                holder.iconoPokemon.setBackgroundResource(R.mipmap.ic_bulbasaur);
-                break;
-        }
+        final Pokemon respuesta = this.pokemons.get(position);
+        holder.nombrePokemon.setText(respuesta.getName());
 
-
+        holder.btnPokemon.setOnClickListener(view -> {
+            Intent intentInformacionPokemon = new Intent(context.getApplicationContext(), InformacionPokemon.class);
+            intentInformacionPokemon.putExtra("id", respuesta.getId());
+            intentInformacionPokemon.putExtra("name", respuesta.getName());
+            context.startActivity(intentInformacionPokemon);
+        });
     }
 
     @Override
-    public int getItemCount() {return this.listaResults.size();}
+    public int getItemCount() {return this.pokemons.size();}
 }
